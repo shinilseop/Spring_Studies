@@ -59,10 +59,23 @@ public class Owner extends Person {
 	@Digits(fraction = 0, integer = 10)
 	private String telephone;
 
+	@Column(name = "age")
+	@NotEmpty
+	@Digits(fraction = 0, integer = 3)
+	private String age;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "owner_id")
 	@OrderBy("name")
 	private List<Pet> pets = new ArrayList<>();
+
+	public String getAge() {
+		return age;
+	}
+
+	public void setAge(String age) {
+		this.age = age;
+	}
 
 	public String getAddress() {
 		return this.address;

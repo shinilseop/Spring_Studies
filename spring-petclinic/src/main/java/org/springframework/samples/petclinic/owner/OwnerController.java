@@ -91,23 +91,30 @@ class OwnerController {
 			Model model) {
 
 		// allow parameterless GET request for /owners to return all records
-		if (owner.getLastName() == null) {
-			owner.setLastName(""); // empty string signifies broadest possible search
+//		if (owner.getLastName() == null) {
+//			owner.setLastName(""); // empty string signifies broadest possible search
+//		}
+		if (owner.getFirstName() == null) {
+			owner.setFirstName(""); // empty string signifies broadest possible search
 		}
 
 		// find owners by last name
-		Page<Owner> ownersResults = findPaginatedForOwnersLastName(page, owner.getLastName());
+//		Page<Owner> ownersResults = findPaginatedForOwnersLastName(page, owner.getLastName());
+		Page<Owner> ownersResults = findPaginatedForOwnersFirstName(page, owner.getFirstName());
 		if (ownersResults.isEmpty()) {
+			System.out.println("EMPTY SELECT");
 			// no owners found
-			result.rejectValue("lastName", "notFound", "not found");
+			result.rejectValue("firstName", "notFound", "not found");
 			return "owners/findOwners";
 		}
 		else if (ownersResults.getTotalElements() == 1) {
+			System.out.println("FIND 1 SELECT");
 			// 1 owner found
 			owner = ownersResults.iterator().next();
 			return "redirect:/owners/" + owner.getId();
 		}
 		else {
+			System.out.println("MULTIPLE SELECT");
 			// multiple owners found
 			return addPaginationModel(page, model, ownersResults);
 		}
@@ -128,6 +135,14 @@ class OwnerController {
 		int pageSize = 5;
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 		return owners.findByLastName(lastname, pageable);
+
+	}
+
+	private Page<Owner> findPaginatedForOwnersFirstName(int page, String firstname) {
+
+		int pageSize = 5;
+		Pageable pageable = PageRequest.of(page - 1, pageSize);
+		return owners.findByFirstName(firstname.toUpperCase(), pageable);
 
 	}
 
