@@ -1,13 +1,10 @@
 package hello.hellospring;
 
-import hello.hellospring.repository.JdbcMemberRepository;
-import hello.hellospring.repository.JdbcTemplateMemberRepository;
+import hello.hellospring.repository.JpaMemberRepository;
 import hello.hellospring.repository.MemberRepository;
-import hello.hellospring.repository.MemoryMemberRepository;
 import hello.hellospring.service.MemberService;
+import javax.persistence.EntityManager;
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.batch.BatchProperties.Jdbc;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,13 +12,12 @@ import org.springframework.context.annotation.Configuration;
 public class SpringConfigure {
 
   private DataSource dataSource;
+  private EntityManager entityManager;
 
-  @Autowired
-  public SpringConfigure(DataSource dataSource) {
+  public SpringConfigure(DataSource dataSource, EntityManager entityManager) {
     this.dataSource = dataSource;
+    this.entityManager = entityManager;
   }
-
-
 
   @Bean
   public MemberService memberService() {
@@ -32,6 +28,7 @@ public class SpringConfigure {
   public MemberRepository memberRepository() {
 //    return new MemoryMemberRepository();
 //    return new JdbcMemberRepository(dataSource);
-    return new JdbcTemplateMemberRepository(dataSource);
+//    return new JdbcTemplateMemberRepository(dataSource);
+    return new JpaMemberRepository(entityManager);
   }
 }
